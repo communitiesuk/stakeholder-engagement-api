@@ -15,7 +15,7 @@ Bundler
 
 ## Configuration
 
-This app is developed according to [12-Factor App Principles](https://12factor.net/) - it takes all required configuration from environment variables.
+This app is developed according to [12-Factor App Principles](https://12factor.net/) - it takes all required configuration from environment variables. It uses the dotenv gem to load these from a .env file if one is present.
 
 The environment variables required are:
 
@@ -35,7 +35,7 @@ The environment variables required are:
 
 `bundle exec rspec`
 
-* Services (job queues, cache servers, search engines, etc.)
+## Services (job queues, cache servers, search engines, etc.)
 
 None yet
 
