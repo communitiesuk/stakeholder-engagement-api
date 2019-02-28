@@ -12,6 +12,8 @@ gem 'friendly_id'
 
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.5'
+# JSON API compliant serialisation & pagination
+gem 'jsonapi-rails'
 # Use Json Web Token (JWT) for token based authentication
 gem 'jwt'
 # Use postgresql as the database for Active Record

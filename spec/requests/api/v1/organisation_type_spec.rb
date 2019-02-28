@@ -25,23 +25,39 @@ describe Api::V1::OrganisationTypesController do
           let(:body) { response.body }
           let(:parsed_json) { JSON.parse(body) }
 
-          it 'contains valid JSON' do
-            expect{ parsed_json }.to_not raise_error
+          it 'is JSON' do
+            expect(response.content_type).to eq('application/vnd.api+json')
           end
 
-          it 'contains a JSON array' do
-            expect(parsed_json).to be_a(Array)
-          end
-
-          describe 'the JSON array' do
-            it 'has an element for each OrganisationType' do
-              expect(parsed_json.length).to eq(OrganisationType.count)
+          describe 'the JSON body' do
+            it 'is valid ' do
+              expect{ parsed_json }.to_not raise_error
             end
 
-            describe 'each element' do
-              it 'has the attributes of an OrganisationType' do
-                parsed_json.each do |element|
-                  expect(element.keys).to match_array(OrganisationType.attributes)
+            it 'has jsonapi v1 statement' do
+              expect(parsed_json['jsonapi']).to eq( {'version' => '1.0'} )
+            end
+
+            describe 'the data key' do
+              let(:data) { parsed_json['data'] }
+
+              it 'contains a JSON array' do
+                expect(data).to be_a(Array)
+              end
+
+              describe 'the JSON array' do
+                before do
+                end
+                it 'has an element for each OrganisationType' do
+                  expect(data.length).to eq(OrganisationType.count)
+                end
+
+                describe 'each element' do
+                  it 'has the attributes of an OrganisationType' do
+                    data.each do |element|
+                      expect(element.keys).to match_array(OrganisationType.attributes)
+                    end
+                  end
                 end
               end
             end

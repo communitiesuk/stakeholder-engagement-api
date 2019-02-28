@@ -4,7 +4,9 @@ module Api
       protected
 
       def respond_with(data)
-        render json: data if request.format.json?
+        if request.format.json?
+          render jsonapi: data
+        end
       end
     end
   end
