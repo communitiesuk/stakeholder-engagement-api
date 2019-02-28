@@ -6,6 +6,7 @@ module Api
           .order(helpers.to_activerecord_order_clause(params[:sort]))
           .limit(helpers.to_limit(params))
           .offset(helpers.to_offset(params))
+        
         respond_with @organisation_types
       end
     end

@@ -21,16 +21,20 @@ module Api::V1::ApiHelper
   # 1. page[offset] & page[limit]
   # 2. page[number] & page[size]
   def to_offset(params)
-    if params['page[offset]']
-      params['page[offset]'].to_i
-    elsif params['page[number]'] && params['page[size]']
-      # NOTE: page numbers usually start from 1!
-      (params['page[number]'].to_i - 1) * params['page[size]'].to_i
+    if page = params['page']
+      if page['offset']
+        page['offset'].to_i
+      elsif page['number'] && page['size']
+        # NOTE: page numbers usually start from 1!
+        (page['number'].to_i - 1) * page['size'].to_i
+      end
     end
   end
 
   def to_limit(params)
-    limit = params['page[limit]'] || params['page[size]']
-    limit.nil? ? nil : limit.to_i
+    if params['page']
+      limit = params['page']['limit'] || params['page']['size']
+      limit.nil? ? nil : limit.to_i
+    end
   end
 end

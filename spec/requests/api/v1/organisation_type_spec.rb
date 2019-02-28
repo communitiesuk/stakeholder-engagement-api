@@ -3,6 +3,7 @@ require 'support/factory_bot'
 
 describe Api::V1::OrganisationTypesController do
   let(:headers) { {} }
+  let(:params) { {} }
 
   context 'a JSON request' do
     let(:headers) {
@@ -13,7 +14,7 @@ describe Api::V1::OrganisationTypesController do
     }
     context 'with no authentication' do
       describe 'GET #index' do
-        let(:perform_request) { get '/api/v1/organisation_types', headers: headers }
+        let(:perform_request) { get '/api/v1/organisation_types', params: params, headers: headers }
         it 'returns http success' do
           perform_request
           expect(response).to have_http_status(:success)
@@ -48,25 +49,50 @@ describe Api::V1::OrganisationTypesController do
                 expect(data).to be_a(Array)
               end
 
-              describe 'the JSON array' do
+              context 'when 2 organisation_types exist' do
                 before do
-                  create(:organisation_type)
-                  create(:organisation_type, name: 'House builder')
+                  create(:organisation_type, name: 'Local Authority')
+                  create(:organisation_type, name: 'House Builder')
                 end
 
-                it 'has an element for each OrganisationType' do
-                  expect(data.length).to eq(2)
-                end
+                describe 'the JSON array' do
+                  it 'has an element for each OrganisationType' do
+                    expect(data.length).to eq(2)
+                  end
 
-                describe 'each element' do
-                  it 'has jsonapi-compliant keys' do
-                    data.each do |element|
-                      expect(element.keys).to match_array(["attributes", "id", "links", "type"])
+                  describe 'each element' do
+                    it 'has jsonapi-compliant keys' do
+                      data.each do |element|
+                        expect(element.keys).to match_array(["attributes", "id", "links", "type"])
+                      end
+                    end
+                    it 'has the attributes of an OrganisationType' do
+                      data.each do |element|
+                        expect(element['attributes'].keys).to match_array(OrganisationType.new.attributes.keys)
+                      end
                     end
                   end
-                  it 'has the attributes of an OrganisationType' do
-                    data.each do |element|
-                      expect(element['attributes'].keys).to match_array(OrganisationType.new.attributes.keys)
+                end
+
+                context 'given an offset of 1' do
+                  let(:params) { {'page[offset]' => '1'} }
+
+                  it 'has one data element' do
+                    expect(data.length).to eq(1)
+                  end
+
+                  context 'given a sort on name' do
+                    let(:params) { {'page[offset]' => '1', 'sort'=>'name'} }
+
+                    it 'contains the last element by name' do
+                      expect(data[0]['attributes']['name']).to eq('Local Authority')
+                    end
+                  end
+                  context 'given an inverse sort on name' do
+                    let(:params) { {'page[offset]' => '1', 'sort'=>'-name'} }
+
+                    it 'contains the first element by name' do
+                      expect(data[0]['attributes']['name']).to eq('House Builder')
                     end
                   end
                 end

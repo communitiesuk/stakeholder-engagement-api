@@ -70,7 +70,7 @@ describe Api::V1::ApiHelper do
     let(:params) { {} }
 
     context 'given params including page[limit]' do
-      let(:params) { {'page[limit]' => '7'} }
+      let(:params) { {'page' => {'limit' => '7'}} }
 
       it 'returns the page[limit] param as an integer' do
         expect(result).to eq(7)
@@ -78,7 +78,7 @@ describe Api::V1::ApiHelper do
     end
 
     context 'given params including page[size]' do
-      let(:params) { {'page[size]' => '7'} }
+      let(:params) { {'page' => {'size' => '7'}} }
 
       it 'returns the page[size] param as an integer' do
         expect(result).to eq(7)
@@ -98,7 +98,7 @@ describe Api::V1::ApiHelper do
     let(:params) { {} }
 
     context 'given params including page[offset]' do
-      let(:params) { {'page[offset]' => '7'} }
+      let(:params) { {'page' =>{'offset' => '7'}} }
 
       it 'returns the page[offset] param as an integer' do
         expect(result).to eq(7)
@@ -106,7 +106,7 @@ describe Api::V1::ApiHelper do
     end
 
     context 'given params including page[size] and page[number]' do
-      let(:params) { {'page[size]' => '10', 'page[number]' => '2'} }
+      let(:params) { {'page' => {'size' => '10', 'number' => '2'}} }
 
       it 'returns the (page[size] - 1) * page[number]' do
         expect(result).to eq(10)
