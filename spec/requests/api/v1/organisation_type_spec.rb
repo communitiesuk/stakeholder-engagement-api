@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'support/factory_bot'
 
 describe Api::V1::OrganisationTypesController do
   let(:headers) { {} }
@@ -12,20 +13,22 @@ describe Api::V1::OrganisationTypesController do
     }
     context 'with no authentication' do
       describe 'GET #index' do
-        before do
-          get '/api/v1/organisation_types', headers: headers
-        end
-
+        let(:perform_request) { get '/api/v1/organisation_types', headers: headers }
         it 'returns http success' do
+          perform_request
           expect(response).to have_http_status(:success)
         end
 
 
         describe 'the response body' do
-          let(:body) { response.body }
+          let(:body) do
+            perform_request
+            response.body
+          end
           let(:parsed_json) { JSON.parse(body) }
 
           it 'is JSON' do
+            perform_request
             expect(response.content_type).to eq('application/vnd.api+json')
           end
 
@@ -47,15 +50,23 @@ describe Api::V1::OrganisationTypesController do
 
               describe 'the JSON array' do
                 before do
+                  create(:organisation_type)
+                  create(:organisation_type, name: 'House builder')
                 end
+
                 it 'has an element for each OrganisationType' do
-                  expect(data.length).to eq(OrganisationType.count)
+                  expect(data.length).to eq(2)
                 end
 
                 describe 'each element' do
+                  it 'has jsonapi-compliant keys' do
+                    data.each do |element|
+                      expect(element.keys).to match_array(["attributes", "id", "links", "type"])
+                    end
+                  end
                   it 'has the attributes of an OrganisationType' do
                     data.each do |element|
-                      expect(element.keys).to match_array(OrganisationType.attributes)
+                      expect(element['attributes'].keys).to match_array(OrganisationType.new.attributes.keys)
                     end
                   end
                 end
