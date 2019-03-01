@@ -18,14 +18,19 @@ gem 'jbuilder', '~> 2.5'
 gem 'jsonapi-rails'
 # Use Json Web Token (JWT) for token based authentication
 gem 'jwt'
+# Pagination via kaminari
+gem 'kaminari'
 
 # Use postgresql as the database for Active Record
 gem 'pg', '>= 0.18', '< 2.0'
+
 # Use Puma as the app server
 gem 'puma', '~> 3.11'
-
+# Use Pry for the console - solves some issues with arrow keys on Mac OSX
+gem 'pry-rails'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.2.2'
+
 # Use Redis adapter to run Action Cable in production
 # gem 'redis', '~> 4.0'
 # Use ActiveModel has_secure_password
@@ -46,6 +51,8 @@ group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
   gem 'factory_bot_rails'
   gem 'rspec-rails'
+  # Code coverage reports in /coverage/index.html
+  gem 'simplecov'
 end
 
 group :development do

@@ -120,4 +120,64 @@ describe Api::V1::ApiHelper do
       end
     end
   end
+
+  describe '.to_page_number' do
+    let(:result) { helper.to_page_number(params) }
+    let(:params) { {} }
+
+    context 'given params including page[number]' do
+      let(:params) { {'page' => {'number' => 2}} }
+
+      it 'returns page[number] as an integer' do
+        expect(result).to eq(2)
+      end
+    end
+
+    context 'given params including page[offset]' do
+      let(:params) { {'page' =>{'offset' => '7'}} }
+
+      context 'and including page[size]' do
+        let(:params) { {'page' =>{'offset' => '7', 'size' => '3'}} }
+
+        it 'returns (page[offset] / page[size]) + 1 as an integer rounded down' do
+          expect(result).to eq(3)
+        end
+      end
+
+      context 'not including page[size]' do
+        it 'returns (page[offset] / default_per_page) + 1 as an integer rounded down' do
+          expect(result).to eq(1)
+        end
+      end
+    end
+  end
+
+  describe '.format_param' do
+    let(:mock_request) { double('request', format: mock_format) }
+    let(:result) { helper.format_param(mock_request) }
+
+    context 'when the request format is json' do
+      let(:mock_format) { double('json format', json?: true, xml?: false) }
+
+      it 'returns :json' do
+        expect(result).to eq(:json)
+      end
+    end
+
+    context 'when the request format is xml' do
+      let(:mock_format) { double('xml format', json?: false, xml?: true) }
+
+      it 'returns :xml' do
+        expect(result).to eq(:xml)
+      end
+    end
+
+    context 'when the request format is neither json nor xml' do
+      let(:mock_format) { double('other format', json?: false, xml?: false) }
+
+      it 'returns :html' do
+        expect(result).to eq(:html)
+      end
+    end
+  end
 end

@@ -74,25 +74,29 @@ describe Api::V1::OrganisationTypesController do
                   end
                 end
 
-                context 'given an offset of 1' do
-                  let(:params) { {'page[offset]' => '1'} }
+                context 'given a page size of 1' do
+                  let(:params) { {'page[size]' => '1'} }
 
                   it 'has one data element' do
                     expect(data.length).to eq(1)
                   end
 
-                  context 'given a sort on name' do
-                    let(:params) { {'page[offset]' => '1', 'sort'=>'name'} }
+                  context 'and a page number of 2' do
+                    before { params['page[number]'] = '2' }
 
-                    it 'contains the last element by name' do
-                      expect(data[0]['attributes']['name']).to eq('Local Authority')
+                    context 'given a sort on name' do
+                      before { params['sort'] = 'name' }
+
+                      it 'contains the last element by name' do
+                        expect(data[0]['attributes']['name']).to eq('Local Authority')
+                      end
                     end
-                  end
-                  context 'given an inverse sort on name' do
-                    let(:params) { {'page[offset]' => '1', 'sort'=>'-name'} }
+                    context 'given an inverse sort on name' do
+                      before { params['sort'] = '-name' }
 
-                    it 'contains the first element by name' do
-                      expect(data[0]['attributes']['name']).to eq('House Builder')
+                      it 'contains the first element by name' do
+                        expect(data[0]['attributes']['name']).to eq('House Builder')
+                      end
                     end
                   end
                 end
