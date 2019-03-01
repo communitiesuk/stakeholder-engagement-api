@@ -57,7 +57,7 @@ module Api::V1::ApiHelper
 
   def pagination_link(collection, page_number:)
     url_for(
-      params.permit!.merge(
+      params.except(:format).permit!.merge(
         only_path: true,
         page: {
           number: page_number,
