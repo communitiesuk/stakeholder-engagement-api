@@ -1,3 +1,2 @@
 class OrganisationTypePolicy < OpenPolicy
-
 end
