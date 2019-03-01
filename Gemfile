@@ -7,19 +7,30 @@ ruby '2.5.3'
 gem 'bcrypt', '~> 3.1.7'
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.1.0', require: false
+
 gem 'dotenv'
+
 gem 'friendly_id'
 
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.5'
+# JSON API compliant serialisation & pagination
+gem 'jsonapi-rails'
 # Use Json Web Token (JWT) for token based authentication
 gem 'jwt'
+# Pagination via kaminari
+gem 'kaminari'
+
 # Use postgresql as the database for Active Record
 gem 'pg', '>= 0.18', '< 2.0'
+
 # Use Puma as the app server
 gem 'puma', '~> 3.11'
+# Use Pry for the console - solves some issues with arrow keys on Mac OSX
+gem 'pry-rails'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.2.2'
+
 # Use Redis adapter to run Action Cable in production
 # gem 'redis', '~> 4.0'
 # Use ActiveModel has_secure_password
@@ -36,9 +47,12 @@ gem 'rails', '~> 5.2.2'
 # gem 'rack-cors'
 
 group :development, :test do
-  gem 'rspec-rails'
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
+  gem 'factory_bot_rails'
+  gem 'rspec-rails'
+  # Code coverage reports in /coverage/index.html
+  gem 'simplecov'
 end
 
 group :development do
