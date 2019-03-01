@@ -9,6 +9,11 @@ module Api
 
         respond_with @organisation_types
       end
+
+      def show
+        @organisation_type = OrganisationType.friendly.find(params[:id])
+        respond_with @organisation_type
+      end
     end
   end
 end
