@@ -32,6 +32,17 @@ describe Api::V1::OrganisationTypesController do
         context 'when the requested entity exists' do
           let(:requested_id) { organisation_type.id }
 
+          context 'when the current user is not authorized to show the entity' do
+            before do
+              allow_any_instance_of(OrganisationTypePolicy).to receive(:show?).and_return(false)
+            end
+
+            it 'returns status forbidden' do
+              perform_request
+              expect(response).to have_http_status(:forbidden)
+            end
+          end
+
           it 'returns http success' do
             perform_request
             expect(response).to have_http_status(:success)
