@@ -13,6 +13,120 @@ describe "API V1 OrganisationTypes", type: :request do
       }
     }
     context 'with no authentication' do
+      describe 'PATCH :id' do
+        let(:organisation_type) { create(:organisation_type, name: 'existing organisation_type') }
+        let(:new_name) { 'new organisation_type name' }
+        let(:valid_params) do
+          {
+            data: {
+              type: 'organisation_type',
+              id: organisation_type.id,
+              attributes: {
+                name: new_name
+              }
+            }
+          }
+        end
+        let(:params) { valid_params }
+        let(:perform_request) do
+          patch "/api/v1/organisation_types/#{organisation_type.id}", params: params, headers: headers
+        end
+
+        context 'when the current user is not authorized to update the entity' do
+          before do
+            allow_any_instance_of(OrganisationTypePolicy).to receive(:update?).and_return(false)
+          end
+
+          it 'returns status forbidden' do
+            perform_request
+            expect(response).to have_http_status(:forbidden)
+          end
+        end
+
+        context 'when the current user is authorized to update the entity' do
+
+          context 'with valid params' do
+            let(:params) { valid_params }
+
+            context 'and a unique name' do
+              let(:name) { 'unique name' }
+
+              it 'creates the entity' do
+                expect{ perform_request }.to change(OrganisationType, :count).by(1)
+              end
+
+              describe 'the response' do
+                it 'has status 200 OK' do
+                  perform_request
+                  expect(response).to have_http_status(:ok)
+                end
+
+                describe 'the response body' do
+                  it 'is JSON' do
+                    perform_request
+                    expect(response.content_type).to eq('application/vnd.api+json')
+                  end
+
+                  describe 'the JSON body' do
+                    let(:body) do
+                      perform_request
+                      response.body
+                    end
+                    let(:parsed_json) { JSON.parse(body) }
+                    let(:data) { parsed_json['data'] }
+
+
+                    it 'is valid ' do
+                      expect{ parsed_json }.to_not raise_error
+                    end
+
+                    it 'has jsonapi-compliant keys' do
+                      expect(data.keys).to match_array(["attributes", "id", "links", "type"])
+                    end
+
+                    it 'has the attributes of an OrganisationType' do
+                      expect(data['attributes'].keys).to match_array(OrganisationType.new.attributes.keys)
+                    end
+                  end
+                end
+              end
+            end
+
+            context 'but a name that is already present' do
+              let(:name) { 'duplicate name' }
+              before do
+                create(:organisation_type, name: 'new organisation_type name')
+              end
+
+              it 'returns 422 unprocessable entity' do
+                perform_request
+                expect(response).to have_http_status(:unprocessable_entity)
+              end
+
+              it 'does not update the entity' do
+                expect{ perform_request }.to_not change(organisation_type, :updated_at)
+              end
+            end
+          end
+
+          context 'with invalid params' do
+            let(:params) { {
+              'name' => 'new organisation_type'
+            } }
+
+            it 'returns bad_request' do
+              perform_request
+              expect(response).to have_http_status(:bad_request)
+            end
+
+            it 'does not update the entity' do
+              expect{ perform_request }.to_not change(organisation_type, :updated_at)
+            end
+          end
+        end
+      end
+
+
       describe 'POST' do
         let(:name) { 'new organisation_type' }
         let(:valid_params) do
