@@ -8,6 +8,8 @@ module Api
 
       rescue_from ActiveRecord::RecordNotFound, with: :not_found
       rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
+      rescue_from ActionController::ParameterMissing, with: :bad_request
+      rescue_from ActiveRecord::RecordInvalid, with: :unprocessable_entity
 
       # we have no concept of user identity yet, but Pundit requires a
       # current_user method
@@ -29,14 +31,22 @@ module Api
 
       private
 
-      def respond_with(data)
+      def respond_with(data, args={})
         if request.format.json?
-          render jsonapi: data
+          render jsonapi: data, status: args[:status]
         end
       end
 
       def not_found(exception)
         render json: {error: exception}, status: :not_found
+      end
+
+      def bad_request(exception)
+        render json: {error: exception}, status: :bad_request
+      end
+
+      def unprocessable_entity(exception)
+        render json: {error: exception}, status: :unprocessable_entity
       end
 
       def user_not_authorized(exception)

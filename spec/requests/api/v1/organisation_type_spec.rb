@@ -1,7 +1,7 @@
 require 'rails_helper'
 require 'support/factory_bot'
 
-describe Api::V1::OrganisationTypesController do
+describe "API V1 OrganisationTypes", type: :request do
   let(:headers) { {} }
   let(:params) { {} }
 
@@ -13,6 +13,124 @@ describe Api::V1::OrganisationTypesController do
       }
     }
     context 'with no authentication' do
+      describe 'POST' do
+        let(:name) { 'new organisation_type' }
+        let(:valid_params) do
+          {
+            data: {
+              type: 'organisation_type',
+              attributes: {
+                name: name
+              }
+            }
+          }
+        end
+        let(:params) { valid_params }
+        let(:perform_request) do
+          post "/api/v1/organisation_types/", params: params, headers: headers
+        end
+
+        context 'when the current user is not authorized to create the entity' do
+          before do
+            allow_any_instance_of(OrganisationTypePolicy).to receive(:create?).and_return(false)
+          end
+
+          it 'returns status forbidden' do
+            perform_request
+            expect(response).to have_http_status(:forbidden)
+          end
+        end
+
+        context 'when the current user is authorized to create the entity' do
+
+          context 'with valid params' do
+            let(:params) { valid_params }
+
+            context 'and a unique name' do
+              let(:name) { 'unique name' }
+
+              it 'creates the entity' do
+                expect{ perform_request }.to change(OrganisationType, :count).by(1)
+              end
+
+              describe 'the response' do
+                let(:created_entity) { OrganisationType.where(name: name).last }
+
+                it 'has status 201 created' do
+                  perform_request
+                  expect(response).to have_http_status(:created)
+                end
+
+                it 'has a Location header with the URL of the entity' do
+                  perform_request
+                  expect(response.headers['Location']).to eq(url_for([:api, :v1, created_entity]))
+                end
+
+                describe 'the response body' do
+                  it 'is JSON' do
+                    perform_request
+                    expect(response.content_type).to eq('application/vnd.api+json')
+                  end
+
+                  describe 'the JSON body' do
+                    let(:body) do
+                      perform_request
+                      response.body
+                    end
+                    let(:parsed_json) { JSON.parse(body) }
+                    let(:data) { parsed_json['data'] }
+
+
+                    it 'is valid ' do
+                      expect{ parsed_json }.to_not raise_error
+                    end
+
+                    it 'has jsonapi-compliant keys' do
+                      expect(data.keys).to match_array(["attributes", "id", "links", "type"])
+                    end
+
+                    it 'has the attributes of an OrganisationType' do
+                      expect(data['attributes'].keys).to match_array(OrganisationType.new.attributes.keys)
+                    end
+                  end
+                end
+              end
+            end
+
+            context 'but a name that is already present' do
+              let(:name) { 'duplicate name' }
+              before do
+                create(:organisation_type, name: 'duplicate name')
+              end
+
+              it 'returns 422 unprocessable entity' do
+                perform_request
+                expect(response).to have_http_status(:unprocessable_entity)
+              end
+
+              it 'does not creates the entity' do
+                expect{ perform_request }.to_not change(OrganisationType, :count)
+              end
+            end
+          end
+
+          context 'with invalid params' do
+            let(:params) { {
+              'name' => 'new organisation_type'
+            } }
+
+            it 'returns bad_request' do
+              perform_request
+              expect(response).to have_http_status(:bad_request)
+            end
+
+            it 'does not create the entity' do
+              expect{ perform_request }.to_not change(OrganisationType, :count)
+            end
+          end
+        end
+      end
+
       describe 'GET #show with ID' do
         let(:perform_request) { get "/api/v1/organisation_types/#{requested_id}", params: params, headers: headers }
 
