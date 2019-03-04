@@ -15,6 +15,20 @@ module Api
         authorize @organisation_type
         respond_with @organisation_type
       end
+
+      def create
+        @organisation_type = OrganisationType.create!(organisation_type_params)
+        authorize @organisation_type
+        response.headers['Location'] = url_for([:api, :v1, @organisation_type])
+
+        respond_with  @organisation_type, status: :created
+      end
+
+      private
+
+      def organisation_type_params(opts = params)
+        opts.require(:data).require(:attributes).permit(:name)
+      end
     end
   end
 end
