@@ -13,6 +13,43 @@ describe "API V1 OrganisationTypes", type: :request do
       }
     }
     context 'with no authentication' do
+
+      describe 'DELETE :id' do
+        let!(:organisation_type) { create(:organisation_type, name: 'existing organisation_type') }
+        let(:perform_request) do
+          delete "/api/v1/organisation_types/#{organisation_type.id}", params: params, headers: headers
+        end
+
+        context 'when the current user is not authorized to delete the entity' do
+          before do
+            allow_any_instance_of(OrganisationTypePolicy).to receive(:destroy?).and_return(false)
+          end
+
+          it 'returns status forbidden' do
+            perform_request
+            expect(response).to have_http_status(:forbidden)
+          end
+
+          it 'does not delete the entity' do
+            expect{ perform_request }.to_not change(OrganisationType, :count)
+          end
+
+        end
+
+        context 'when the current user is authorized to delete the entity' do
+          it 'deletes the entity' do
+            expect{ perform_request }.to change(OrganisationType, :count).by(-1)
+          end
+
+          describe 'the response' do
+            it 'has status 204 No Content' do
+              perform_request
+              expect(response).to have_http_status(:no_content)
+            end
+          end
+        end
+      end
+
       describe 'PATCH :id' do
         let(:organisation_type) { create(:organisation_type, name: 'existing organisation_type') }
         let(:new_name) { 'new organisation_type name' }

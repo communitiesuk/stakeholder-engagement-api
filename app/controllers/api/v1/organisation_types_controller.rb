@@ -17,8 +17,9 @@ module Api
       end
 
       def create
-        @organisation_type = OrganisationType.create!(organisation_type_params)
+        @organisation_type = OrganisationType.new(organisation_type_params)
         authorize @organisation_type
+        @organisation_type.save!
         response.headers['Location'] = url_for([:api, :v1, @organisation_type])
 
         respond_with  @organisation_type, status: :created
@@ -26,9 +27,16 @@ module Api
 
       def update
         @organisation_type = OrganisationType.friendly.find(params[:id])
-        @organisation_type.update!(organisation_type_params)
         authorize @organisation_type
+        @organisation_type.update!(organisation_type_params)
         respond_with  @organisation_type, status: :ok
+      end
+
+      def destroy
+        @organisation_type = OrganisationType.friendly.find(params[:id])
+        authorize @organisation_type
+        @organisation_type.destroy!
+        render jsonapi: nil, status: :no_content
       end
 
       private
