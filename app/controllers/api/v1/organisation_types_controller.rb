@@ -24,6 +24,13 @@ module Api
         respond_with  @organisation_type, status: :created
       end
 
+      def update
+        @organisation_type = OrganisationType.friendly.find(params[:id])
+        @organisation_type.update!(organisation_type_params)
+        authorize @organisation_type
+        respond_with  @organisation_type, status: :ok
+      end
+
       private
 
       def organisation_type_params(opts = params)
