@@ -13,6 +13,61 @@ describe Api::V1::OrganisationTypesController do
       }
     }
     context 'with no authentication' do
+      describe 'GET #show with ID' do
+        let(:perform_request) { get "/api/v1/organisation_types/#{requested_id}", params: params, headers: headers }
+
+        let(:organisation_type) do
+          create(:organisation_type, name: 'Local Authority')
+        end
+
+        context 'when the requested entity does not exist' do
+          let(:requested_id) { organisation_type.id + 1 }
+
+          it 'returns http not found' do
+            perform_request
+            expect(response).to have_http_status(:not_found)
+          end
+        end
+
+        context 'when the requested entity exists' do
+          let(:requested_id) { organisation_type.id }
+
+          it 'returns http success' do
+            perform_request
+            expect(response).to have_http_status(:success)
+          end
+
+          describe 'the response body' do
+            it 'is JSON' do
+              perform_request
+              expect(response.content_type).to eq('application/vnd.api+json')
+            end
+
+            describe 'the JSON body' do
+              let(:body) do
+                perform_request
+                response.body
+              end
+              let(:parsed_json) { JSON.parse(body) }
+              let(:data) { parsed_json['data'] }
+
+
+              it 'is valid ' do
+                expect{ parsed_json }.to_not raise_error
+              end
+
+              it 'has jsonapi-compliant keys' do
+                expect(data.keys).to match_array(["attributes", "id", "links", "type"])
+              end
+
+              it 'has the attributes of an OrganisationType' do
+                expect(data['attributes'].keys).to match_array(OrganisationType.new.attributes.keys)
+              end
+            end
+          end
+        end
+      end
+
       describe 'GET #index' do
         let(:perform_request) { get '/api/v1/organisation_types', params: params, headers: headers }
         it 'returns http success' do
@@ -26,14 +81,15 @@ describe Api::V1::OrganisationTypesController do
             perform_request
             response.body
           end
-          let(:parsed_json) { JSON.parse(body) }
-
           it 'is JSON' do
             perform_request
             expect(response.content_type).to eq('application/vnd.api+json')
           end
 
           describe 'the JSON body' do
+            let(:parsed_json) { JSON.parse(body) }
+            let(:data) { parsed_json['data'] }
+
             it 'is valid ' do
               expect{ parsed_json }.to_not raise_error
             end
