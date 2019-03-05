@@ -1,0 +1,2 @@
+class RegionPolicy < OpenPolicy
+end

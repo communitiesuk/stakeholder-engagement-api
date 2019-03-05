@@ -5,3 +5,27 @@
 #
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
+
+
+# UK Regions + NUTS codes
+regions = [
+  {nuts_code: 'UKC', name: 'North East'},
+  {nuts_code: 'UKD', name: 'North West'},
+  {nuts_code: 'UKE', name: 'Yorkshire and the Humber'},
+  {nuts_code: 'UKF', name: 'East Midlands'},
+  {nuts_code: 'UKG', name: 'West Midlands'},
+  {nuts_code: 'UKH', name: 'East of England'},
+  {nuts_code: 'UKI', name: 'Greater London'},
+  {nuts_code: 'UKJ', name: 'South East'},
+  {nuts_code: 'UKK', name: 'South West'},
+  {nuts_code: 'UKL', name: 'Wales'},
+  {nuts_code: 'UKM', name: 'Scotland'},
+  {nuts_code: 'UKN', name: 'Northern Ireland'}
+]
+
+regions.each do |region|
+  record = Region.where(nuts_code: region[:nuts_code]).first || Region.new
+  record.nuts_code = region[:nuts_code]
+  record.name = region[:name]
+  record.save!
+end

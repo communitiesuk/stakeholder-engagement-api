@@ -28,7 +28,7 @@ RSpec.shared_examples 'a JSON:API-compliant update method' do |model_class|
       allow_any_instance_of(policy_class).to receive(:update?).and_return(true)
     end
 
-    context 'with syntactically-incorrect params' do
+    context 'with syntactically-correct params' do
       context 'and no validation errors' do
         let(:params) { valid_params }
 
