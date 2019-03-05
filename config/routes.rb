@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       resources :organisation_types
+      resources :regions
     end
   end
 end

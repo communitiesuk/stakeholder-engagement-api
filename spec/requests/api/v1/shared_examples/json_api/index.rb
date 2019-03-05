@@ -2,7 +2,7 @@
 # url (the URL of the method)
 # model_instance_1 (a let block to create an instance of the model_class)
 # model_instance_2 (a let block to create another instance of the model_class)
-# sort_attribute (an attribute by which a sort will order model_instance_2 after model_instance_1)
+# sort_attribute (an attribute by which a sort will order model_instance_1 AFTER model_instance_2)
 RSpec.shared_examples 'a JSON:API-compliant index method' do |model_class|
   let(:perform_request) { get url, params: params, headers: headers }
 
