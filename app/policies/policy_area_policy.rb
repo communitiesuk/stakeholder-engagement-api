@@ -1,0 +1,2 @@
+class PolicyAreaPolicy < OpenPolicy
+end
