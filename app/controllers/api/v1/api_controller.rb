@@ -1,7 +1,7 @@
 module Api
   module V1
     class ApiController < ApplicationController
-      before_action :stub_current_user!, :force_json
+      before_action :stub_current_user!
 
       include Pundit
       after_action :verify_authorized
@@ -31,8 +31,10 @@ module Api
 
       private
 
+      # HACK - force everything to render as JSON
+      # Fixes issue with Node client library on frontend
       def respond_with(data, args={})
-        if request.format.json?
+        if true || request.format.json?
           render jsonapi: data, status: args[:status]
         end
       end
