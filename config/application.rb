@@ -12,6 +12,7 @@ require "action_view/railtie"
 require "action_cable/engine"
 # require "sprockets/railtie"
 # require "rails/test_unit/railtie"
+require './lib/middleware/consider_all_request_json_middleware'
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -31,5 +32,9 @@ module StakeholderEngagementApi
     # Middleware like session, flash, cookies can be added back manually.
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
+
+    # force all requests to be json
+    config.middleware.insert_before(ActionDispatch::Static,ConsiderAllRequestsJsonMiddleware)
+
   end
 end

@@ -1,7 +1,7 @@
 module Api
   module V1
     class ApiController < ApplicationController
-      before_action :stub_current_user!
+      before_action :stub_current_user!, :force_json
 
       include Pundit
       after_action :verify_authorized
