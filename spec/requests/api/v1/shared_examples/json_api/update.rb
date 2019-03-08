@@ -68,6 +68,10 @@ RSpec.shared_examples 'a JSON:API-compliant update method' do |model_class|
               it "has the right attributes for #{model_class}" do
                 expect(data['attributes'].keys).to match_array(model_class.new.attributes.keys)
               end
+
+              it 'has the expected type for an array of the model class' do
+                expect(data['type']).to eq(model_class.name.underscore.pluralize)
+              end
             end
           end
         end
