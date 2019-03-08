@@ -29,3 +29,18 @@ regions.each do |region|
   record.name = region[:name]
   record.save!
 end
+
+
+policy_areas = [
+  {name: "Communities"},
+  {name: "Housing"},
+  {name: "Jobs and growth"},
+  {name: "Homelessness and Rough Sleeping"},
+  {name: "Local economies"},
+  {name: "Local government"},
+  {name: "Local resilience"},
+  {name: "Local service delivery"}
+]
+policy_areas.each do |policy_area|
+  record = PolicyArea.find_or_create_by(name: policy_area[:name])
+end
