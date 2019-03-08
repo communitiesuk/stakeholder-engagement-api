@@ -35,7 +35,9 @@ module Api
       # Fixes issue with Node client library on frontend
       def respond_with(data, args={})
         if true || request.format.json?
-          render jsonapi: data, status: args[:status]
+          render jsonapi: data, status: args[:status],
+                                include: args[:include],
+                                fields: args[:fields]
         end
       end
 

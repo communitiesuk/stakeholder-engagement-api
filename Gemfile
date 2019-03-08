@@ -50,10 +50,6 @@ gem 'rails', '~> 5.2.2'
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
-  gem 'factory_bot_rails'
-  gem 'rspec-rails'
-  # Code coverage reports in /coverage/index.html
-  gem 'simplecov'
 end
 
 group :development do
@@ -61,4 +57,12 @@ group :development do
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
+end
+
+group :test do
+  gem 'factory_bot_rails'
+  gem 'rspec-rails'
+  # Code coverage reports in /coverage/index.html
+  gem 'simplecov'
+  gem 'database_cleaner'
 end
