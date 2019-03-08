@@ -46,7 +46,7 @@ policy_areas.each do |policy_area|
 end
 
 role_types = [
-  {name: 'C-level e'}
+  {name: 'C-level Executive'}
 ]
 role_types.each do |role_type|
   record = RoleType.find_or_create_by(name: role_type[:name])
