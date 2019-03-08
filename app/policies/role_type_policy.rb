@@ -1,0 +1,2 @@
+class RoleTypePolicy < OpenPolicy
+end
