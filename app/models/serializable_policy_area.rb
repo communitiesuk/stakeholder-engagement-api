@@ -1,5 +1,5 @@
 class SerializablePolicyArea < JSONAPI::Serializable::Resource
-  type :organisation_types
+  type :policy_areas
 
   attributes :id, :slug, :name, :created_at, :updated_at
 

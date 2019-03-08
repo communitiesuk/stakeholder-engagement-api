@@ -1,5 +1,5 @@
 class SerializableRegion < JSONAPI::Serializable::Resource
-  type :region
+  type :regions
 
   attributes :id, :slug, :name, :nuts_code, :created_at, :updated_at
 

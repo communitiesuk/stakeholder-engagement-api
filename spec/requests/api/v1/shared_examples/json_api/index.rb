@@ -62,6 +62,11 @@ RSpec.shared_examples 'a JSON:API-compliant index method' do |model_class|
                   expect(element['attributes'].keys).to match_array(model_class.new.attributes.keys)
                 end
               end
+              it 'has the expected type for an array of the model class' do
+                data.each do |element|
+                  expect(element['type']).to eq(model_class.name.underscore.pluralize)
+                end
+              end
             end
           end
 
