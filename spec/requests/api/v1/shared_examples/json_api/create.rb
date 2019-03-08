@@ -71,13 +71,13 @@ RSpec.shared_examples 'a JSON:API-compliant create method' do |model_class|
               end
 
               it 'has jsonapi-compliant keys' do
-                expect(data.keys).to match_array(["attributes", "id", "links", "type"])
+                expect(data.keys).to include("attributes", "id", "links", "type")
               end
 
               it 'has the attributes of the model_class' do
                 expect(data['attributes'].keys).to match_array(model_class.new.attributes.keys)
               end
-              
+
               it 'has the expected type for an array of the model class' do
                 expect(data['type']).to eq(model_class.name.underscore.pluralize)
               end

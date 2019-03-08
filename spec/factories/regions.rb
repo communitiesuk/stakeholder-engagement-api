@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :region do
-    nuts_code { "MyString" }
+    nuts_code { "NUT5" }
     name { "MyString" }
   end
 end

@@ -3,9 +3,10 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v1 do
+      resources :organisations
       resources :organisation_types
-      resources :regions
       resources :policy_areas
+      resources :regions
     end
   end
 end

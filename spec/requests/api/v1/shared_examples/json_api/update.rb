@@ -62,7 +62,7 @@ RSpec.shared_examples 'a JSON:API-compliant update method' do |model_class|
               end
 
               it 'has jsonapi-compliant keys' do
-                expect(data.keys).to match_array(["attributes", "id", "links", "type"])
+                expect(data.keys).to include("attributes", "id", "links", "type")
               end
 
               it "has the right attributes for #{model_class}" do

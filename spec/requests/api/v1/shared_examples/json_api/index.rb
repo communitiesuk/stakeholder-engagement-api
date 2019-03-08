@@ -54,7 +54,7 @@ RSpec.shared_examples 'a JSON:API-compliant index method' do |model_class|
             describe 'each element' do
               it 'has jsonapi-compliant keys' do
                 data.each do |element|
-                  expect(element.keys).to match_array(["attributes", "id", "links", "type"])
+                  expect(element.keys).to include("attributes", "id", "links", "type")
                 end
               end
               it 'has the attributes of the model_class instance' do
