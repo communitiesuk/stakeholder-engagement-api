@@ -86,6 +86,37 @@ describe "API V1 Persons", type: :request do
         end
 
         it_behaves_like 'a JSON:API-compliant show method', Person
+
+        context 'when the Person has roles' do
+          let(:region_id){ nil }
+          let!(:role) { create(:role, person: model_instance, region_id: region_id) }
+          let(:included_object_types_and_ids) do
+            JSON.parse(response.body)['included'].map{|obj| [obj['id'], obj['type']] }
+          end
+          before do
+            get url, params: params, headers: headers
+          end
+
+          it 'includes roles' do
+            expect(included_object_types_and_ids).to include([role.id.to_s, 'roles'])
+          end
+
+          it 'includes the roles organisation' do
+            expect(included_object_types_and_ids).to include([role.organisation_id.to_s, 'organisations'])
+          end
+
+          it 'includes the roles role_type' do
+            expect(included_object_types_and_ids).to include([role.role_type_id.to_s, 'role_types'])
+          end
+
+          context 'when the role has a region' do
+            let(:region) { create(:region, name: 'A new region', nuts_code: 'NTS2') }
+            let(:region_id) { region.id }
+            it 'includes the roles region' do
+              expect(included_object_types_and_ids).to include([role.region_id.to_s, 'regions'])
+            end
+          end
+        end
       end
 
       describe 'GET #index' do
@@ -95,6 +126,37 @@ describe "API V1 Persons", type: :request do
         let(:sort_attribute) { 'name' }
 
         it_behaves_like 'a JSON:API-compliant index method', Person
+
+        context 'when the Person has roles' do
+          let(:region_id){ nil }
+          let!(:role) { create(:role, person: model_instance, region_id: region_id) }
+          let(:included_object_types_and_ids) do
+            JSON.parse(response.body)['included'].map{|obj| [obj['id'], obj['type']] }
+          end
+          before do
+            get url, params: params, headers: headers
+          end
+
+          it 'includes roles' do
+            expect(included_object_types_and_ids).to include([role.id.to_s, 'roles'])
+          end
+
+          it 'includes the roles organisation' do
+            expect(included_object_types_and_ids).to include([role.organisation_id.to_s, 'organisations'])
+          end
+
+          it 'includes the roles role_type' do
+            expect(included_object_types_and_ids).to include([role.role_type_id.to_s, 'role_types'])
+          end
+
+          context 'when the role has a region' do
+            let(:region) { create(:region, name: 'A new region', nuts_code: 'NTS2') }
+            let(:region_id) { region.id }
+            it 'includes the roles region' do
+              expect(included_object_types_and_ids).to include([role.region_id.to_s, 'regions'])
+            end
+          end
+        end
       end
     end
   end
