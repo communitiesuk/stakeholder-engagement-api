@@ -51,7 +51,6 @@ describe "API V1 Persons", type: :request do
         it_behaves_like 'a JSON:API-compliant update method', Person
       end
 
-
       describe 'POST' do
         let(:url) { "/api/v1/people" }
         let(:valid_params) do
@@ -87,7 +86,7 @@ describe "API V1 Persons", type: :request do
 
         it_behaves_like 'a JSON:API-compliant show method', Person
 
-        context 'when the Person has roles' do
+        context 'when a Person has roles' do
           let(:region_id){ nil }
           let!(:role) { create(:role, person: model_instance, region_id: region_id) }
           let(:included_object_types_and_ids) do
@@ -126,6 +125,39 @@ describe "API V1 Persons", type: :request do
         let(:sort_attribute) { 'name' }
 
         it_behaves_like 'a JSON:API-compliant index method', Person
+
+        context 'given a search filter' do
+          before do
+            model_instance_1
+            model_instance_2
+          end
+
+          let(:params) { { filter: {search: search_string} } }
+          before do
+            get url, params: params, headers: headers
+          end
+          let(:results) { JSON.parse(response.body)['data'] }
+
+          context 'containing text that matches a surname' do
+            let(:search_string) { 'Do' }
+
+            it 'brings back records that match the given text' do
+              results.each do |result|
+                expect(result['attributes']['name']).to include(search_string)
+              end
+            end
+          end
+
+          context 'containing text that matches a first name' do
+            let(:search_string) { 'Abb' }
+
+            it 'brings back records that match the given text' do
+              results.each do |result|
+                expect(result['attributes']['name']).to include(search_string)
+              end
+            end
+          end
+        end
 
         context 'when the Person has roles' do
           let(:region_id){ nil }

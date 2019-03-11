@@ -23,6 +23,9 @@ gem 'kaminari'
 
 # Use postgresql as the database for Active Record
 gem 'pg', '>= 0.18', '< 2.0'
+# Full-text search wrapper 
+gem 'pg_search'
+
 # Use Pry for the console - solves some issues with arrow keys on Mac OSX
 gem 'pry-rails'
 # Use Puma as the app server

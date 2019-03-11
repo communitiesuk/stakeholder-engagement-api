@@ -58,7 +58,6 @@ module Api
 
         render json: {error: exception}, status: :forbidden
       end
-
     end
   end
 end
