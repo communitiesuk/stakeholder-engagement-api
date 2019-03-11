@@ -129,7 +129,7 @@ describe "API V1 Persons", type: :request do
 
         context 'when the Person has roles' do
           let(:region_id){ nil }
-          let!(:role) { create(:role, person: model_instance, region_id: region_id) }
+          let!(:role) { create(:role, person: model_instance_1, region_id: region_id) }
           let(:included_object_types_and_ids) do
             JSON.parse(response.body)['included'].map{|obj| [obj['id'], obj['type']] }
           end
