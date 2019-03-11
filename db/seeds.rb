@@ -44,3 +44,10 @@ policy_areas = [
 policy_areas.each do |policy_area|
   record = PolicyArea.find_or_create_by(name: policy_area[:name])
 end
+
+role_types = [
+  {name: 'C-level Executive'}
+]
+role_types.each do |role_type|
+  record = RoleType.find_or_create_by(name: role_type[:name])
+end
