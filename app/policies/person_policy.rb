@@ -1,0 +1,2 @@
+class PersonPolicy < OpenPolicy
+end

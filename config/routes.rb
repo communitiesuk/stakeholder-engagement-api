@@ -5,6 +5,7 @@ Rails.application.routes.draw do
     namespace :v1 do
       resources :organisations
       resources :organisation_types
+      resources :people
       resources :policy_areas
       resources :regions
       resources :role_types
