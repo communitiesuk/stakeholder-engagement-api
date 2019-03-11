@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_03_11_103620) do
+ActiveRecord::Schema.define(version: 2019_03_11_112501) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -75,6 +75,28 @@ ActiveRecord::Schema.define(version: 2019_03_11_103620) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "roles", force: :cascade do |t|
+    t.string "slug"
+    t.string "title"
+    t.bigint "person_id"
+    t.bigint "organisation_id"
+    t.bigint "region_id"
+    t.bigint "role_type_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["organisation_id"], name: "index_roles_on_organisation_id"
+    t.index ["person_id", "organisation_id", "region_id", "title"], name: "ix_role_unique_person_org_region_title", unique: true
+    t.index ["person_id"], name: "index_roles_on_person_id"
+    t.index ["region_id"], name: "index_roles_on_region_id"
+    t.index ["role_type_id"], name: "index_roles_on_role_type_id"
+    t.index ["slug"], name: "index_roles_on_slug"
+    t.index ["title"], name: "index_roles_on_title"
+  end
+
   add_foreign_key "organisations", "organisation_types"
   add_foreign_key "organisations", "regions"
+  add_foreign_key "roles", "organisations"
+  add_foreign_key "roles", "people"
+  add_foreign_key "roles", "regions"
+  add_foreign_key "roles", "role_types"
 end
