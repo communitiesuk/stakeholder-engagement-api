@@ -9,6 +9,7 @@ Rails.application.routes.draw do
       resources :policy_areas
       resources :regions
       resources :role_types
+      resources :roles
     end
   end
 end
