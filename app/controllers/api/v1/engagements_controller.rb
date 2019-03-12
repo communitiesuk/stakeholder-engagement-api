@@ -4,7 +4,7 @@ module Api
       def index
         @engagements = helpers.paginate(
           Engagement.all
-            .order(helpers.to_activerecord_order_clause(params[:sort]))
+            .order(helpers.to_activerecord_order_clause(params[:sort], Engagement))
         )
         authorize @engagements
         respond_with @engagements,  include: [:stakeholder, :recorded_by]

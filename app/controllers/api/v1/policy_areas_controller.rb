@@ -4,7 +4,7 @@ module Api
       def index
         @policy_areas = helpers.paginate(
           PolicyArea.all
-            .order(helpers.to_activerecord_order_clause(params[:sort]))
+            .order(helpers.to_activerecord_order_clause(params[:sort], PolicyArea))
         )
         authorize @policy_areas
         respond_with @policy_areas

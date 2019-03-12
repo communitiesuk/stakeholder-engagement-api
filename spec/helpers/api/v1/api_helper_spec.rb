@@ -2,7 +2,8 @@ require 'rails_helper'
 
 describe Api::V1::ApiHelper do
   describe '.to_activerecord_order_clause' do
-    let(:result) { helper.to_activerecord_order_clause(param) }
+    let(:model_class) { Engagement }
+    let(:result) { helper.to_activerecord_order_clause(param, model_class) }
 
     context 'given nil' do
       let(:param) {}
@@ -36,6 +37,14 @@ describe Api::V1::ApiHelper do
           it 'is the param value followed by DESC' do
             expect(result[0]).to eq('name DESC')
           end
+        end
+      end
+
+      context 'that contains an association and a .' do
+        let(:param) { 'stakeholder.name' }
+
+        it 'replaces the association with the table_name' do
+          expect(result[0]).to eq('people.name')
         end
       end
     end

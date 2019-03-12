@@ -4,7 +4,7 @@ module Api
       def index
         @regions = helpers.paginate(
           Region.all
-            .order(helpers.to_activerecord_order_clause(params[:sort]))
+            .order(helpers.to_activerecord_order_clause(params[:sort], Region))
         )
         authorize @regions
         respond_with @regions
