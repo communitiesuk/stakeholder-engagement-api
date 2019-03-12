@@ -3,6 +3,7 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v1 do
+      resources :engagements
       resources :organisations
       resources :organisation_types
       resources :people

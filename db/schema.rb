@@ -10,10 +10,28 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_03_11_112501) do
+ActiveRecord::Schema.define(version: 2019_03_12_121814) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "engagements", force: :cascade do |t|
+    t.boolean "anonymous"
+    t.date "contact_date"
+    t.boolean "contact_made"
+    t.text "summary"
+    t.string "notes"
+    t.text "next_steps"
+    t.boolean "escalated"
+    t.boolean "email_receipt"
+    t.string "next_planned_contact"
+    t.bigint "stakeholder_id"
+    t.bigint "recorded_by_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["recorded_by_id"], name: "index_engagements_on_recorded_by_id"
+    t.index ["stakeholder_id"], name: "index_engagements_on_stakeholder_id"
+  end
 
   create_table "friendly_id_slugs", force: :cascade do |t|
     t.string "slug", null: false
@@ -93,6 +111,8 @@ ActiveRecord::Schema.define(version: 2019_03_11_112501) do
     t.index ["title"], name: "index_roles_on_title"
   end
 
+  add_foreign_key "engagements", "people", column: "recorded_by_id"
+  add_foreign_key "engagements", "people", column: "stakeholder_id"
   add_foreign_key "organisations", "organisation_types"
   add_foreign_key "organisations", "regions"
   add_foreign_key "roles", "organisations"
