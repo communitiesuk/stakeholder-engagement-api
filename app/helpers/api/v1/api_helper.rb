@@ -102,4 +102,10 @@ module Api::V1::ApiHelper
     ) unless collection.last_page?
   end
 
+  def add_filter_if_given(given_scope, filter=params[:filter])
+    if filter
+      given_scope = given_scope.search(filter[:search]) if filter[:search].present?
+    end
+    given_scope
+  end
 end

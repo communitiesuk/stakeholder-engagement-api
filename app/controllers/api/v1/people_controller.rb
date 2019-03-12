@@ -2,10 +2,10 @@ module Api
   module V1
     class PeopleController < Api::V1::ApiController
       def index
-        @people = helpers.paginate(
-          Person.all
-            .order(helpers.to_activerecord_order_clause(params[:sort]))
-        )
+        people_scope = Person.all
+          .order(helpers.to_activerecord_order_clause(params[:sort]))
+        people_scope = helpers.add_filter_if_given(people_scope)
+        @people = helpers.paginate(people_scope)
         authorize @people
         respond_with @people, include: [roles: [:organisation, :role_type, :region]]
       end
