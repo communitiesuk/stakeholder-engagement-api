@@ -23,7 +23,7 @@ gem 'kaminari'
 
 # Use postgresql as the database for Active Record
 gem 'pg', '>= 0.18', '< 2.0'
-# Full-text search wrapper 
+# Full-text search wrapper
 gem 'pg_search'
 
 # Use Pry for the console - solves some issues with arrow keys on Mac OSX
@@ -53,6 +53,8 @@ gem 'rails', '~> 5.2.2'
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
+  # high-level wrapper around Net::HTTP, much easier to debug requests/responses
+  gem 'httparty'
 end
 
 group :development do

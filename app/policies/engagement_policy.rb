@@ -1,0 +1,2 @@
+class EngagementPolicy < OpenPolicy
+end

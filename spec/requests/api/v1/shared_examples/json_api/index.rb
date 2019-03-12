@@ -84,14 +84,14 @@ RSpec.shared_examples 'a JSON:API-compliant index method' do |model_class|
                 before { params['sort'] = sort_attribute }
 
                 it 'contains the last element by sort_attribute' do
-                  expect(data[0]['attributes'][sort_attribute]).to eq(model_instance_1.send(sort_attribute))
+                  expect(data[0]['attributes'][sort_attribute].to_s).to eq(model_instance_1.send(sort_attribute).to_s)
                 end
               end
               context 'given an inverse sort_attribute' do
                 before { params['sort'] = '-' + sort_attribute }
 
                 it 'contains the first element by sort_attribute' do
-                  expect(data[0]['attributes'][sort_attribute]).to eq(model_instance_2.send(sort_attribute))
+                  expect(data[0]['attributes'][sort_attribute].to_s).to eq(model_instance_2.send(sort_attribute).to_s)
                 end
               end
             end
