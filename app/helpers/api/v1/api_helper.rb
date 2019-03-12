@@ -5,12 +5,35 @@ module Api::V1::ApiHelper
   # This function converts a string in the above format
   # to an array suitable for use in an activerecord order method,
   # in the above example that would be ['name', 'created_at DESC']
-  def to_activerecord_order_clause(sort_param)
+  def to_activerecord_order_clause(sort_param, root_class)
     if sort_param
       sort_param.to_s.split(',').map do |param|
-        param.starts_with?('-') ? param[1..-1] + ' DESC' : param
+        name = param
+        suffix = ''
+
+        if param.starts_with?('-')
+          name = param[1..-1]
+          suffix = ' DESC'
+        end
+
+        # NOTE: edge case & gotcha here for the future, where
+        # we have a double-join onto the same table as different
+        # associations (e.g. stakeholder / recorded_by both join to people)
+        if name.include?('.')
+          association, field = name.split('.')
+          table_name = to_table_name(root_class, association)
+          name = [table_name, field].join('.')
+        end
+
+        name + suffix
       end
     end
+  end
+
+  def to_table_name(root_class, association)
+    reflection = root_class.reflect_on_association(association)
+    class_name = reflection.options[:class_name] || association
+    class_name.classify.constantize.table_name
   end
 
   # JSON API spec defines pagination very loosely

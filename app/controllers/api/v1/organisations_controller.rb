@@ -4,7 +4,7 @@ module Api
       def index
         @organisations = helpers.paginate(
           Organisation.all
-            .order(helpers.to_activerecord_order_clause(params[:sort]))
+            .order(helpers.to_activerecord_order_clause(params[:sort], Organisation))
         )
         authorize @organisations
         respond_with @organisations,  include: [:organisation_type, :region]

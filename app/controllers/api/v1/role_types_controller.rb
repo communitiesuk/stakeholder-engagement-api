@@ -4,7 +4,7 @@ module Api
       def index
         @role_types = helpers.paginate(
           RoleType.all
-            .order(helpers.to_activerecord_order_clause(params[:sort]))
+            .order(helpers.to_activerecord_order_clause(params[:sort], RoleType))
         )
         authorize @role_types
         respond_with @role_types
