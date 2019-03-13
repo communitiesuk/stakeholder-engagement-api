@@ -21,7 +21,7 @@ module Api
         authorize @engagement
         @engagement.save!
         response.headers['Location'] = url_for([:api, :v1, @engagement])
-
+        update_relationships_if_needed(@engagement)
         respond_with  @engagement,  status: :created,
                                       include: [:stakeholder, :recorded_by]
       end
@@ -30,6 +30,7 @@ module Api
         @engagement = Engagement.find(params[:id])
         authorize @engagement
         @engagement.update!(engagement_params)
+        update_relationships_if_needed(@engagement)
         respond_with  @engagement, status: :ok,
                                      include: [:stakeholder, :recorded_by]
       end
@@ -43,21 +44,39 @@ module Api
 
       private
 
+      def update_relationships_if_needed(engagement)
+        if pa_params = relationship_params.try(:[], :policy_areas)
+          engagement.policy_area_ids = pa_params[:data].map{|e| e[:id]}
+        end
+      end
+
+      def relationship_params(opts = params)
+        opts.require(:data).permit(
+          relationships: {
+            policy_areas: {
+              data: [:type, :id]
+            }
+          }
+        ).try(:[], :relationships)
+      end
+
       def engagement_params(opts = params)
-        opts.require(:data).require(:attributes).permit(
-          :anonymous,
-          :contact_date,
-          :contact_made,
-          :summary,
-          :notes,
-          :next_steps,
-          :escalated,
-          :email_receipt,
-          :next_planned_contact,
-          :stakeholder_id,
-          :recorded_by_id,
-          :created_at,
-          :updated_at
+        opts.require(:data).permit(
+          attributes: [
+            :anonymous,
+            :contact_date,
+            :contact_made,
+            :summary,
+            :notes,
+            :next_steps,
+            :escalated,
+            :email_receipt,
+            :next_planned_contact,
+            :stakeholder_id,
+            :recorded_by_id,
+            :created_at,
+            :updated_at
+          ]
         )
       end
     end
