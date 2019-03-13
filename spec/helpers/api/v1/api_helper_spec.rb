@@ -48,6 +48,7 @@ describe Api::V1::ApiHelper do
         end
       end
     end
+
     context 'given multiple sort params' do
       let(:param) { 'name,-age' }
 
@@ -65,7 +66,7 @@ describe Api::V1::ApiHelper do
             expect(result[0]).to eq('name')
           end
         end
-        describe 'a params which starts with a hyphen' do
+        describe 'a param which starts with a hyphen' do
           it 'is the param value followed by DESC' do
             expect(result[1]).to eq('age DESC')
           end

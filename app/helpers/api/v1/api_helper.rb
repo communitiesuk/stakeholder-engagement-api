@@ -7,33 +7,9 @@ module Api::V1::ApiHelper
   # in the above example that would be ['name', 'created_at DESC']
   def to_activerecord_order_clause(sort_param, root_class)
     sort_param.to_s.split(',').map do |param|
-      name, suffix = parse_sort_param(param)
-      name = parse_scoped_field_name(name, root_class) if name.include?('.')
-      name + suffix
+      sp = SortParam.new(as_given: param, root_class: root_class)
+      sp.to_activerecord_order_clause
     end if sort_param
-  end
-
-  def parse_sort_param(param)
-    if param.starts_with?('-')
-      name, suffix = [param[1..-1], ' DESC']
-    else
-      [param, '']
-    end
-  end
-
-  # NOTE: edge case & gotcha here for the future, where
-  # we have a double-join onto the same table as different
-  # associations (e.g. stakeholder / recorded_by both join to people)
-  def parse_scoped_field_name(name, root_class)
-    association, field = name.split('.')
-    table_name = to_table_name(root_class, association)
-    [table_name, field].join('.')
-  end
-
-  def to_table_name(root_class, association)
-    reflection = root_class.reflect_on_association(association)
-    class_name = reflection.options[:class_name] || association
-    class_name.classify.constantize.table_name
   end
 
   # JSON API spec defines pagination very loosely
