@@ -50,6 +50,42 @@ describe "API V1 Engagements", type: :request do
           }
         end
         it_behaves_like 'a JSON:API-compliant update method', Engagement
+
+        context 'when the data includes relationships' do
+          context 'and the relationships includes policy_areas' do
+            let(:policy_area_1) { create(:policy_area, name: 'policy area 1') }
+            let(:policy_area_2) { create(:policy_area, name: 'policy area 2') }
+            let(:params) do
+              {
+                data: {
+                  type: 'engagement',
+                  id: model_instance.id,
+                  relationships: {
+                    policy_areas: {
+                      data: [
+                        {type: 'policy_areas', id: policy_area_1.id},
+                        {type: 'policy_areas', id: policy_area_2.id}
+                      ]
+                    }
+                  }
+                }
+              }
+            end
+            context 'and the engagement has existing policy_areas' do
+              let(:existing_policy_area) { create(:policy_area, name: 'existing policy area') }
+              let(:the_request) { patch url, params: params, headers: headers }
+              before do
+                model_instance.policy_areas << existing_policy_area
+              end
+
+              it 'replaces all existing policy_areas with the new policy_areas' do
+                expect { the_request }.to change{model_instance.reload.policy_area_ids}
+                                          .from([existing_policy_area.id])
+                                          .to([policy_area_1.id, policy_area_2.id])
+              end
+            end
+          end
+        end
       end
 
 
@@ -78,6 +114,40 @@ describe "API V1 Engagements", type: :request do
         end
 
         it_behaves_like 'a JSON:API-compliant create method', Engagement
+
+        context 'when the data includes relationships' do
+          context 'and the relationships includes policy_areas' do
+            let(:policy_area_1) { create(:policy_area, name: 'policy area 1') }
+            let(:policy_area_2) { create(:policy_area, name: 'policy area 2') }
+            let(:params) do
+              {
+                data: {
+                  type: 'engagement',
+                  attributes: {
+                    recorded_by_id: recorded_by.id,
+                    stakeholder_id: stakeholder.id
+                  },
+                  relationships: {
+                    policy_areas: {
+                      data: [
+                        {type: 'policy_areas', id: policy_area_1.id},
+                        {type: 'policy_areas', id: policy_area_2.id}
+                      ]
+                    }
+                  }
+                }
+              }
+            end
+            let(:the_request) { post url, params: params, headers: headers }
+            let(:created_instance) { Engagement.last }
+            before do
+              the_request
+            end
+            it 'applies the new policy_areas' do
+              expect(created_instance.policy_area_ids).to eq([policy_area_1.id, policy_area_2.id])
+            end
+          end
+        end
       end
 
       describe 'GET #show with ID' do
