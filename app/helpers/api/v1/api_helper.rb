@@ -6,28 +6,28 @@ module Api::V1::ApiHelper
   # to an array suitable for use in an activerecord order method,
   # in the above example that would be ['name', 'created_at DESC']
   def to_activerecord_order_clause(sort_param, root_class)
-    if sort_param
-      sort_param.to_s.split(',').map do |param|
-        name = param
-        suffix = ''
+    sort_param.to_s.split(',').map do |param|
+      name, suffix = parse_sort_param(param)
+      name = parse_scoped_field_name(name, root_class) if name.include?('.')
+      name + suffix
+    end if sort_param
+  end
 
-        if param.starts_with?('-')
-          name = param[1..-1]
-          suffix = ' DESC'
-        end
-
-        # NOTE: edge case & gotcha here for the future, where
-        # we have a double-join onto the same table as different
-        # associations (e.g. stakeholder / recorded_by both join to people)
-        if name.include?('.')
-          association, field = name.split('.')
-          table_name = to_table_name(root_class, association)
-          name = [table_name, field].join('.')
-        end
-
-        name + suffix
-      end
+  def parse_sort_param(param)
+    if param.starts_with?('-')
+      name, suffix = [param[1..-1], ' DESC']
+    else
+      [param, '']
     end
+  end
+
+  # NOTE: edge case & gotcha here for the future, where
+  # we have a double-join onto the same table as different
+  # associations (e.g. stakeholder / recorded_by both join to people)
+  def parse_scoped_field_name(name, root_class)
+    association, field = name.split('.')
+    table_name = to_table_name(root_class, association)
+    [table_name, field].join('.')
   end
 
   def to_table_name(root_class, association)
